@@ -1,0 +1,12 @@
+{
+  "name": "lunr-query-samples",
+  "version": "1.0.0",
+  "description": "Sample index generation for LunrQuery",
+  "main": "create_index.js",
+  "scripts": {
+    "build": "node create_index.js"
+  },
+  "dependencies": {
+    "lunr": "^2.3.9"
+  }
+}

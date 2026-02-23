@@ -1,0 +1,27 @@
+[
+  {
+    "id": "neil_armstrong",
+    "name": "Neil Armstrong",
+    "missions": "Gemini 8, Apollo 11"
+  },
+  {
+    "id": "buzz_aldrin",
+    "name": "Buzz Aldrin",
+    "missions": "Gemini 12, Apollo 11"
+  },
+  {
+    "id": "michael_collins",
+    "name": "Michael Collins",
+    "missions": "Gemini 10, Apollo 11"
+  },
+  {
+    "id": "jim_lovell",
+    "name": "Jim Lovell",
+    "missions": "Gemini 7, Gemini 12, Apollo 8, Apollo 13"
+  },
+  {
+    "id": "alan_shepard",
+    "name": "Alan Shepard",
+    "missions": "Mercury-Redstone 3, Apollo 14"
+  }
+]

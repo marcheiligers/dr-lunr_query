@@ -1,0 +1,4 @@
+lunr_query.rb
+errors/
+data/node_modules/
+**/.DS_Store

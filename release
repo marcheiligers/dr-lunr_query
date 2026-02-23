@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+rm lunr_query.rb | true
+
+export VERSION=$(head -n1 CHANGELOG.md | gsed -En 's/# v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p')
+
+files=$(grep require_relative lib/lunr_query.rb | gsed -En "s/require_relative\s+'(\w+\/\w+\.rb)'/\1/p")
+echo "# dr-lunr_query $VERSION" >> lunr_query.rb
+echo "# MIT Licensed" >> lunr_query.rb
+echo "# Copyright (c) 2026 Marc Heiligers" >> lunr_query.rb
+echo "# See https://github.com/marcheiligers/dr-lunr_query" >> lunr_query.rb
+echo "" >> lunr_query.rb
+echo "module LunrQuery; DEVELOPMENT = false; VERSION = '$VERSION'; end" >> lunr_query.rb
+echo "" >> lunr_query.rb
+grep -v -E "(require_relative|DEVELOPMENT)" lib/lunr_query.rb >> lunr_query.rb
+for file in ${files}
+do
+  echo "Adding ${file}"
+  cat "lib/${file}" >> lunr_query.rb
+  echo "" >> lunr_query.rb
+done

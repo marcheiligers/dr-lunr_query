@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@master
+      - name: Get version
+        run: echo "version=v$(head -n1 CHANGELOG.md | sed -En 's/# v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p')" >> "$GITHUB_OUTPUT"
+        id: version
+      - name: Merge files
+        run: |
+          files=$(grep require_relative lib/input.rb | sed -En "s/require_relative\s+'(\w+\.rb)'/\1/p")
+          echo "# dr-input $VERSION" >> input.rb
+          echo "# MIT Licensed" >> input.rb
+          echo "# Copyright (c) 2024 Marc Heiligers" >> input.rb
+          echo "# See https://github.com/marcheiligers/dr-input" >> input.rb
+          echo "" >> input.rb
+          echo "module Input; DEVELOPMENT = false; VERSION = '$VERSION'; end" >> input.rb
+          echo "" >> input.rb
+          grep -v -E "(require_relative|DEVELOPMENT)" lib/input.rb >> input.rb
+          for file in ${files}
+          do
+            cat "lib/${file}" >> input.rb
+            echo "" >> input.rb
+          done
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+      - name: Get changelog
+        run: |
+          num=$(echo $(grep -n -m 2 -w "#" CHANGELOG.md | cut -d: -f1 | tail -n1) - 2 | bc)
+          {
+            echo "changelog<<EOF"
+            head -n$num CHANGELOG.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+        id: changelog
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: false
+          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: input.rb
+          token: ${{ secrets.GITHUB_TOKEN }}
